@@ -8,7 +8,7 @@ from datetime import datetime
 LABELS = [
     "Facebook.com", "Suno.ai", "Genmo.ai", "app.pixverse.ai",
     "chatgpt.com", "tunee.ai", "fables.gg", "ideogram.ai",
-    "github.com", "rocking.gr", "blabbermouth.net", "soundcloud.com"
+    "github.com", "rocking.gr", "fadr.com/synthgpt", "soundcloud.com"
 ]
 
 FIG_SIZE = (40, 40)
