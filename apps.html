@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Games Clock</title>
+<style>
+    body {
+        background: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+    canvas {
+        background: white;
+    }
+</style>
+</head>
+<body>
+
+<canvas id="clockCanvas" width="800" height="800"></canvas>
+
+<script>
+const canvas = document.getElementById("clockCanvas");
+const ctx = canvas.getContext("2d");
+
+const centerX = canvas.width / 2;
+const centerY = canvas.height / 2;
+const RADIUS_OUTER = 300;
+const RADIUS_TEXT = 255;
+const RADIUS_HOUR_HAND = 150;
+const RADIUS_MIN_HAND = 225;
+
+const LABELS = [
+    "blabbermouth.net", "Suno.ai", "Genmo.ai", "app.pixverse.ai",
+    "chatgpt.com", "tunee.ai", "fables.gg", "ideogram.ai",
+    "github.com", "rocking.gr", "fadr.com/synthgpt", "soundcloud.com"
+];
+
+function polarToCartesian(radius, angleDeg) {
+    let angleRad = angleDeg * Math.PI / 180;
+    return {
+        x: centerX + radius * Math.cos(angleRad),
+        y: centerY - radius * Math.sin(angleRad)
+    };
+}
+
+function drawClock() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Outer Circle
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, RADIUS_OUTER, 0, 2 * Math.PI);
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "#333";
+    ctx.stroke();
+
+    // Hour markers
+    for (let i = 0; i < 12; i++) {
+        let angle = 90 - i * 30;
+        let p1 = polarToCartesian(RADIUS_OUTER - 15, angle);
+        let p2 = polarToCartesian(RADIUS_OUTER, angle);
+
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "#888";
+        ctx.stroke();
+    }
+
+    // Labels
+    ctx.fillStyle = "#000";
+    ctx.font = "16px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    LABELS.forEach((label, i) => {
+        let angle = 90 - i * 30;
+        let pos = polarToCartesian(RADIUS_TEXT, angle);
+        ctx.fillText(label, pos.x, pos.y);
+    });
+
+    // Current time
+    const now = new Date();
+    const hour = (now.getHours() % 12) + now.getMinutes() / 60;
+    const minute = now.getMinutes();
+
+    // Hour hand
+    let hourPos = polarToCartesian(RADIUS_HOUR_HAND, 90 - hour * 30);
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY);
+    ctx.lineTo(hourPos.x, hourPos.y);
+    ctx.lineWidth = 8;
+    ctx.strokeStyle = "#d62828";
+    ctx.stroke();
+
+    // Minute hand
+    let minutePos = polarToCartesian(RADIUS_MIN_HAND, 90 - minute * 6);
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY);
+    ctx.lineTo(minutePos.x, minutePos.y);
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = "#003049";
+    ctx.stroke();
+
+    // Center cap
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 8, 0, 2 * Math.PI);
+    ctx.fillStyle = "black";
+    ctx.fill();
+
+    // Title
+    ctx.font = "bold 28px Arial";
+    ctx.fillText("Games Clock", centerX, 60);
+}
+
+setInterval(drawClock, 1000);
+drawClock();
+</script>
+
+</body>
+</html>
+
